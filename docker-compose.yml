@@ -1,0 +1,31 @@
+version: '3.8'
+
+volumes:
+  postgres-data:
+
+networks:
+  backend:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - .:/app:cached
+    networks:
+      - backend
+    ports:
+      - ${PORT}:${PORT}
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - backend

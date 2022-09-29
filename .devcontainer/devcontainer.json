@@ -1,19 +1,10 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/go
-{
-	"name": "Go",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			// Update the VARIANT arg to pick a version of Go: 1, 1.19, 1.18
-			// Append -bullseye or -buster to pin to an OS version.
-			// Use -bullseye variants on local arm64/Apple Silicon.
-			"VARIANT": "1.18",
-			// Options
-			"NODE_VERSION": "18"
-		}
-	},
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/go-postgres
+{	
+	"name": "Go & PostgreSQL",
+	"dockerComposeFile": "../docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -23,7 +14,8 @@
 			"settings": { 
 				"go.toolsManagement.checkForUpdates": "local",
 				"go.useLanguageServer": true,
-				"go.gopath": "/go"
+				"go.gopath": "/go",
+				"go.goroot": "/usr/local/go"
 			},
 			
 			// Add the IDs of extensions you want installed when the container is created.
@@ -34,7 +26,7 @@
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	// "forwardPorts": [5432],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "go version",
