@@ -7,32 +7,34 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
+var wg sync.WaitGroup
+
 func ping(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Pong !")
-	fmt.Fprint(os.Stdout, "Pong !")
+	fmt.Println("Pong !")
 }
 
 func main() {
-	fmt.Fprint(os.Stdout, "Starting server...")
+	fmt.Println("Starting server...")
+	wg.Add(1)
 	// load env variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file") 
-		fmt.Fprint(os.Stdout, "Error loading .env file")
+		fmt.Println("Error loading .env file")
 	}
-	fmt.Fprint(os.Stdout, "Loaded env variables...")
+	fmt.Println("Loaded env variables...")
 	// setup router
 	router := mux.NewRouter()
 
 	// setup routes
 	router.HandleFunc("/ping", ping).Methods("GET")
-
-	fmt.Fprint(os.Stdout, "")
 
 	// make channel for graceful shutdown
 	c := make(chan os.Signal, 1)
@@ -52,11 +54,7 @@ func main() {
 		}
 		c <- os.Interrupt
 	}()
-	fmt.Fprint(os.Stdout, "Server started on port "+os.Getenv("PORT"))
-	// wait for graceful shutdown
-	go func() {
-		<-c
-		fmt.Fprint(os.Stdout, "Shutting down server...")
-		os.Exit(0)
-	}()
+	fmt.Println("Server started on port "+os.Getenv("PORT"))
+	wg.Wait()
+	fmt.Println("Server stopped")
 }
