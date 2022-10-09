@@ -1,1 +1,14 @@
-.env
+*
+!.gitignore
+!.devcontainer/
+!docker/
+!modules/
+!scripts/
+!docker-compose.yml
+!Dockerfile
+!LICENSE
+!example.env
+!go.mod
+!go.sum
+!main.go
+!README.md

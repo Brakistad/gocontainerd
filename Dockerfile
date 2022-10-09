@@ -49,7 +49,7 @@ RUN export uname=${USER_NAME:-dev} && \
     apt-get update --allow-releaseinfo-change && \
     apt-get install -yq \
         iproute2 \
-        bash-completion git vim curl gnupg2 nano less ripgrep wget procps \
+        bash-completion git vim curl gnupg2 nano less ripgrep wget procps lsof \
         apt-transport-https ca-certificates software-properties-common \
         rsync sudo unzip && \
     mkdir -p /etc/bash_completion.d && \
@@ -66,6 +66,11 @@ RUN export docker_gid=${DOCKER_GID:-} && \
     groupadd -g ${docker_gid:-1001} docker && \
     usermod -a -G docker ${USER_NAME:-dev}
 
+# install docker-compose inside container, for development usage
+RUN curl -L \
+    "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" \
+    -o /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
 
 COPY docker /docker
 
@@ -81,6 +86,15 @@ RUN chmod +x /docker/start.sh
 
 ENV PATH=$PATH:${USER_HOME:-/home/${USER_NAME:-dev}}/.local/bin:${USER_HOME:-/home/${USER_NAME:-dev}}/.yarn/bin
 
+# Change owner of $GOPATH to user
+RUN chown -R ${USER_NAME:-dev}:${GROUP_NAME:-${USER_NAME:-dev}} $GOPATH
+
+# Switch to non-root user
 USER ${USER_NAME:-dev}
+
+# Installing Go tools
+RUN go install -v golang.org/x/tools/gopls@latest \
+    && go install -v github.com/go-delve/delve/cmd/dlv@latest \
+    && go install -v honnef.co/go/tools/cmd/staticcheck@latest
 
 ENTRYPOINT ["/docker/entrypoint.sh"]

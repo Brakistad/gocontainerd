@@ -20,9 +20,15 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Pong !")
 }
 
+func shutdown(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Shutting down server...")
+	wg.Done()
+}
+
 func main() {
 	fmt.Println("Starting server...")
 	wg.Add(1)
+
 	// load env variables
 	err := godotenv.Load()
 	if err != nil {
@@ -35,6 +41,7 @@ func main() {
 
 	// setup routes
 	router.HandleFunc("/ping", ping).Methods("GET")
+	router.HandleFunc("/shutdown", shutdown).Methods("GET")
 
 	// make channel for graceful shutdown
 	c := make(chan os.Signal, 1)

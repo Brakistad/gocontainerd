@@ -1,7 +1,7 @@
 version: '3.8'
 
 volumes:
-  postgres-data:
+  db-data:
   home:
 
 networks:
@@ -19,6 +19,7 @@ services:
         - USER_NAME=${USER_NAME-}
         - USER_HOME=${USER_HOME-}
         - DOCKER_GID=${DOCKER_GID-}
+    container_name: app
     env_file:
       - .env
     volumes:
@@ -32,11 +33,14 @@ services:
       - ${PORT}:${PORT}
 
   db:
-    image: postgres:latest
+    image: timescale/timescaledb-ha:pg14-ts2.8-latest
+    container_name: db
     restart: unless-stopped
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     env_file:
       - .env
+    ports:
+      - 5432:5432
     networks:
       - backend

@@ -15,7 +15,10 @@
 				"go.toolsManagement.checkForUpdates": "local",
 				"go.useLanguageServer": true,
 				"go.gopath": "/go",
-				"go.goroot": "/usr/local/go"
+				"go.goroot": "/usr/local/go",
+				"go.toolsEnvVars": {
+					"GO111MODULE": "on"
+				}
 			},
 			
 			// Add the IDs of extensions you want installed when the container is created.
