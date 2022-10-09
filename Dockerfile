@@ -51,7 +51,7 @@ RUN export uname=${USER_NAME:-dev} && \
         iproute2 \
         bash-completion git vim curl gnupg2 nano less ripgrep wget procps lsof \
         apt-transport-https ca-certificates software-properties-common \
-        rsync sudo unzip && \
+        rsync sudo unzip postgresql-client && \
     mkdir -p /etc/bash_completion.d && \
     echo ". /etc/profile" >> $HOME/.bashrc && \
     if [ "$uname" != "root" ]; then \

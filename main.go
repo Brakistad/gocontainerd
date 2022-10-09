@@ -8,12 +8,27 @@ import (
 	"os"
 	"time"
 	"sync"
+	"context"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+
+	"brakistad/gocontainerd/modules/timescale"
 )
 
 var wg sync.WaitGroup
+
+
+func status(w http.ResponseWriter, r *http.Request, tsdb *timescale.TimescaleDBHandler) {
+	fmt.Fprintln(w, "Server is running...")
+	// check database connection
+	err := tsdb.DB.Ping(context.Background())
+	if err != nil {
+		fmt.Fprintln(w, "Database connection failed")
+	} else {
+		fmt.Fprintln(w, "Database connection successful")
+	}
+}
 
 func ping(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Pong !")
@@ -35,13 +50,21 @@ func main() {
 		log.Fatal("Error loading .env file") 
 		fmt.Println("Error loading .env file")
 	}
+
 	fmt.Println("Loaded env variables...")
+
+	// create timescale handler
+	tsdb := timescale.NewTimescaleDBHandler()
+	defer tsdb.Close()
 	// setup router
 	router := mux.NewRouter()
 
 	// setup routes
 	router.HandleFunc("/ping", ping).Methods("GET")
 	router.HandleFunc("/shutdown", shutdown).Methods("GET")
+	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+		status(w, r, tsdb)
+	}).Methods("GET")
 
 	// make channel for graceful shutdown
 	c := make(chan os.Signal, 1)
