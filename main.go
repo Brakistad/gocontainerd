@@ -6,15 +6,14 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 	"sync"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
 var wg sync.WaitGroup
-
 
 func status(w http.ResponseWriter, r *http.Request, tsdb *TimescaleDBHandler) {
 	fmt.Fprintln(w, "Server is running...")
@@ -44,14 +43,18 @@ func main() {
 	// load env variables
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file") 
+		log.Fatal("Error loading .env file")
 		fmt.Println("Error loading .env file")
 	}
 
 	fmt.Println("Loaded env variables...")
-
-	// create timescale handler
-	tsdb := NewTimescaleDBHandler()
+	// create database handler
+	tsdb := NewTimescaleDBHandler(
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USERNAME"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"))
 	defer tsdb.Close()
 	// setup router
 	router := mux.NewRouter()
@@ -81,7 +84,7 @@ func main() {
 		}
 		c <- os.Interrupt
 	}()
-	fmt.Println("Server started on port "+os.Getenv("PORT"))
+	fmt.Println("Server started on port " + os.Getenv("PORT"))
 	wg.Wait()
 	fmt.Println("Server stopped")
 }

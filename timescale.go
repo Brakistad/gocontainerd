@@ -17,10 +17,10 @@ var handler *TimescaleDBHandler
 
 var once sync.Once
 
-func NewTimescaleDBHandler() *TimescaleDBHandler {
+func NewTimescaleDBHandler(host string, port string, username string, password string, db string) *TimescaleDBHandler {
 	once.Do(func() {
 		// connect to database
-		db, err := sql.Open("postgres", "postgres://postgres:password@localhost:5432/postgres?sslmode=disable")
+		db, err := sql.Open("postgres", "postgres://"+username+":"+password+"@"+host+":"+port+"/"+db+"?sslmode=disable")
 		if err != nil {
 			log.Fatal(err)
 		}
