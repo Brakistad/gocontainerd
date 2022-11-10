@@ -1,6 +1,7 @@
 {
 	"name": "Go and TimescaleDB Composed",
 	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "none"
