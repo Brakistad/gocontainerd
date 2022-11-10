@@ -3,10 +3,9 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"features": {
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "none"
-		},
+		// golang tools and standard environment Updated to latest major version
 		"ghcr.io/devcontainers/features/go:1": {}
+
 	},
 
 	// Configure tool-specific properties.
@@ -18,7 +17,8 @@
 				"go.toolsManagement.checkForUpdates": "local",
 				"go.useLanguageServer": true,
 				"go.gopath": "/go"
-			}
+			},
+			"extensions": ["copilot.copilot-vscode", "golang.go"]
 		}
 	}
 

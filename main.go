@@ -42,7 +42,7 @@ func status(w http.ResponseWriter, r *http.Request) {
 	// check database connection
 	err = conn.Conn.Ping(context.Background())
 	if err != nil {
-		fmt.Fprintln(w, "Database connection failed")
+		fmt.Fprintln(w, "Database connection failed: ", err)
 		// create database handler
 		log.Println("Initializing database handler...")
 		err = conn.InitConnection()
@@ -80,7 +80,7 @@ func main() {
 		defer wg.Done()
 		srv := &http.Server{
 			Handler: router,
-			Addr:    "0.0.0.0:80",
+			Addr:    "0.0.0.0:" + os.Getenv("PORT"),
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}
@@ -88,6 +88,7 @@ func main() {
 			log.Fatal(err)
 		}
 		c <- os.Interrupt
+		log.Println("Server stopped")
 	}()
 	log.Println("Server started on port " + os.Getenv("PORT"))
 	wg.Wait()
