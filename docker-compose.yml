@@ -1,0 +1,46 @@
+version: '3.8'
+
+volumes:
+  db-data:
+  minio:
+  home:
+
+
+networks:
+  backend:
+
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: dev
+      args:
+        - USER_UID=${USER_UID-}
+        - USER_GID=${USER_GID-}
+        - USER_NAME=${USER_NAME-}
+        - USER_HOME=${USER_HOME-}
+        - DOCKER_GID=${DOCKER_GID-}
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - ./docker:/docker
+      - home:/home/${USER_NAME-dev}
+      # map docker deamon
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    networks:
+      - backend
+    ports:
+      - ${EXPOSED_PORT}:${PORT}
+
+  db:
+    image: timescale/timescaledb-ha:pg14-ts2.8-latest
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - backend
