@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 
+#export uname=${USER_NAME:-}
+#export gname=${GROUP_NAME:-${USER_NAME:-}}
+#export home_dir=${USER_HOME:-/home/$uname}
+# change to use arguments instead of environment variables
+export uname=$1
+export gname=$2
+export home_dir=$3
+
+# this is how to use the arguments
+# ./set_env.sh user group /home/user
+
 # Change user ID, group ID and user name if a USER_NAME is supplied, this ensures that the ownership
 # of bind mounted volumes is the same as on the host machine.
 # This is needed for Linux environments or WSL 2
-RUN export uname=${USER_NAME:-} && \
-    export gname=${GROUP_NAME:-${USER_NAME:-}} && \
-    export home_dir=${USER_HOME:-/home/$uname} && \
-    set_env.sh 
     if [ -n "$USER_UID" ] || [ -n "$USER_GID" ] || [ "$uname" != "root" ]; then \
         if [ "$uname" = "root" ]; then \
             echo "Cannot change uid/gid when USER_NAME is root" >&2 && \
