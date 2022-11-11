@@ -4,9 +4,15 @@
 	"service": "app",
 	"features": {
 		// golang tools and standard environment Updated to latest major version
-		"ghcr.io/devcontainers/features/go:1": {}
+		"ghcr.io/devcontainers/features/go:1": {},
+		"ghcr.io/devcontainers/features/docker-from-docker:1": {
+			"version": "latest"
+		}
+
 
 	},
+	"workspaceFolder": "/workspaces/gocontainerd",
+	"remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -18,12 +24,15 @@
 				"go.useLanguageServer": true,
 				"go.gopath": "/go"
 			},
-			"extensions": ["copilot.copilot-vscode", "golang.go"]
+			// add copilot and go extension
+			"extensions": ["golang.go", "Copilot.copilot"]
 		}
-	}
+	},
+	"remoteUser": "vscode",
+	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [5432, 8080]
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "go version",

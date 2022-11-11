@@ -9,9 +9,11 @@ networks:
 services:
   app:
     image: mcr.microsoft.com/devcontainers/go:0-1.19-buster
+    volumes:
+      - ${LOCAL_WORKSPACE_FOLDER}:/workspaces/gocontainerd
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
-      - PORT=8080
+      - DATABASE_URL="postgres://postgres:postgres@db:5432/postgres"
+      - PORT=80
     networks:
       - backend
     command: /bin/sh -c "while sleep 1000; do :; done"
@@ -28,6 +30,6 @@ services:
       - TIMESCALEDB_TELEMETRY=off
       - PGDATA=/var/lib/postgresql/data
     ports:
-      - 54321:5432
+      - 5432:5432
     networks:
       - backend

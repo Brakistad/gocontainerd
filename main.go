@@ -63,7 +63,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var wg sync.WaitGroup
-	log.Println("Starting server...")
+	
 	wg.Add(1)
 
 	// setup router
@@ -78,9 +78,10 @@ func main() {
 
 	go func() {
 		defer wg.Done()
+		log.Println("Starting server...")
 		srv := &http.Server{
 			Handler: router,
-			Addr:    "0.0.0.0:" + os.Getenv("PORT"),
+			Addr:    "0.0.0.0:80",
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}
