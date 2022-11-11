@@ -1,0 +1,34 @@
+# default ignore everything
+# except .gitignore, README.md and LICENSE
+*
+!.gitignore
+!README.md
+!LICENSE
+
+## files to include ##
+# docker files
+!docker-compose.yml
+!Dockerfile
+!Dockerfile.dev
+!example.env
+# source code files
+!go.mod
+!go.sum
+!main.go
+!tools.go
+
+# air config file
+!.air.toml
+
+## Directories to include ##
+!.devcontainer
+!.github
+!.github/workflows
+!docker
+!scripts
+!.vscode
+# and their contents
+!*/**
+
+# if you want to ignore further subdirectory files and directories
+# you need to add them here
