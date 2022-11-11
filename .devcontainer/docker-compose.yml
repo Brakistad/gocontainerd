@@ -31,7 +31,5 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - TIMESCALEDB_TELEMETRY=off
-    ports:
-      - 15432:5432
     networks:
       - backend

@@ -16,6 +16,8 @@
 	"customizations": {
 		// Configure properties specific to VS Code.
 		"vscode": {
+			// add copilot and go extension and postgres driver for SQLTools
+			"extensions": ["golang.go", "Copilot.copilot", "mtxr.sqltools", "mtxr.sqltools-driver-pg"],
 			// Set *default* container specific settings.json values on container create.
 			"settings": {
 				"go.gopath": "/go",
@@ -49,10 +51,30 @@
 				},
 				"go.coverOnSaveTimeout": "60s",
 				"go.coverOnSaveOutputDirectory": "${workspaceFolder}/coverage",
-				"go.testTimeout": "60s"
-			},
-			// add copilot and go extension
-			"extensions": ["golang.go", "Copilot.copilot"]
+				"go.testTimeout": "60s",
+				"sqltools.connections": [
+					{
+						"name": "TimescaleDB-local",
+						"driver": "PostgreSQL",
+						"host": "db",
+						"port": 5432,
+						"username": "postgres",
+						"password": "postgres",
+						"database": "postgres",
+						"ssl": false,
+						"savePassword": true,
+						"connectTimeout": 30,
+						"requestTimeout": 30,
+						"cancelQueryOnTimeout": true,
+						"lowerCaseIdentifiers": false,
+						"keepConnectionAlive": false,
+						"applicationName": "SQLTools"
+					}
+				],
+				"sqltools.autoConnectTo": [
+					"TimescaleDB-local"
+				]
+			}
 		}
 	},
 	// "remoteUser": "vscode",
@@ -61,8 +83,8 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [5432, 8080]
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": ["go mod download", "install_tools.sh"]
+	// Run go mod download and ./install_tools after container is setup
+	"postStartCommand": " go mod download && /workspaces/gocontainerd/.devcontainer/install_tools.sh"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
