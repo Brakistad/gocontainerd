@@ -61,6 +61,10 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	log.Println("Pong !")
 }
 
+func welcome(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Welcome to the homepage!")
+}
+
 func main() {
 	var wg sync.WaitGroup
 	
@@ -69,7 +73,9 @@ func main() {
 	// setup router
 	router := mux.NewRouter()
 
+	
 	// setup routes
+	router.HandleFunc("/", welcome).Methods("GET")
 	router.HandleFunc("/ping", ping).Methods("GET")
 	router.HandleFunc("/status", status).Methods("GET")
 	
