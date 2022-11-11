@@ -19,7 +19,7 @@ services:
     networks:
       - backend
     #command installs the go dependencies and then overrites the entrypoint to run the app
-    command: ["bash", "-c", "go install github.com/cosmtrek/air@latest && air; while sleep 1000; do :; done"]
+    command: ["bash", "-c", "while sleep 1000; do :; done"]
 
   db:
     image: timescale/timescaledb-ha:pg14-ts2.8-latest
