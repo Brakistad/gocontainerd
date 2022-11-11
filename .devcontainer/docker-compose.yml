@@ -1,7 +1,9 @@
 version: '3.8'
 
 volumes:
+# create colume db-data for postgres
   db-data:
+    driver: local
 
 networks:
   backend:
@@ -9,27 +11,29 @@ networks:
 services:
   app:
     image: mcr.microsoft.com/devcontainers/go:0-1.19-buster
-    volumes:
-      - ${LOCAL_WORKSPACE_FOLDER}:/workspaces/gocontainerd
     environment:
       - DATABASE_URL="postgres://postgres:postgres@db:5432/postgres"
       - PORT=80
+    ports:
+      - 18080:80
     networks:
       - backend
-    command: /bin/sh -c "while sleep 1000; do :; done"
+    #command installs the go dependencies and then overrites the entrypoint to run the app
+    command: ["bash", "-c", "go install github.com/cosmtrek/air@latest && air; while sleep 1000; do :; done"]
 
   db:
     image: timescale/timescaledb-ha:pg14-ts2.8-latest
     restart: unless-stopped
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data/data:/var/lib/postgresql/data/pgdata
+      - db-data/pg_wal:/var/lib/postgresql/pg_wal
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - TIMESCALEDB_TELEMETRY=off
-      - PGDATA=/var/lib/postgresql/data
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
-      - 5432:5432
+      - 15432:5432
     networks:
       - backend
