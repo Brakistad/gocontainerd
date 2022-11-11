@@ -63,11 +63,8 @@
 						"database": "postgres",
 						"ssl": false,
 						"savePassword": true,
-						"connectTimeout": 30,
-						"requestTimeout": 30,
-						"cancelQueryOnTimeout": true,
 						"lowerCaseIdentifiers": false,
-						"keepConnectionAlive": false,
+						"keepConnectionAlive": true,
 						"applicationName": "SQLTools"
 					}
 				],
