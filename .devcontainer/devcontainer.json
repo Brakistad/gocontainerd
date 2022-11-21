@@ -81,7 +81,7 @@
 	// "forwardPorts": [5432, 8080]
 
 	// Run go mod download and ./install_tools after container is setup
-	"postStartCommand": " go mod download && /workspaces/gocontainerd/.devcontainer/install_tools.sh"
+	"postStartCommand": " go mod download && ${workspaceFolder}/.devcontainer/install_tools.sh"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
